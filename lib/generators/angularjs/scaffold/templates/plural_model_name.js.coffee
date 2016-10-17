@@ -17,4 +17,3 @@ angular.module("<%= @plural_model_name %>", ["ngResource"]).factory "<%= @model_
 
   <%= "#{@model_name}" %>
 ]
-root.angular = angular
