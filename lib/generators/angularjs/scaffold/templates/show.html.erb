@@ -1,22 +1,39 @@
-<h1><%= @model_name.titleize %></h1>
+<section data-ng-include=" '<%%= asset_path('headers/<%= @plural_folder_name%>.html') %>' " ></section>
 
-<%- columns.each do |column| -%>
-<p>
-  <b><%= column.name.humanize %></b><br>
-  {{<%=@resource_name%>.<%= column.name %>}}
-</p>
+<div class="page">
 
-<%- end -%>
-<div class="form-actions">
-  <a href="/<%= @plural_model_name%>/{{<%= @resource_name%>.id}}/edit"
-    class="btn btn-primary"><i class="icon-edit"></i>
-    Edit <%= @model_name.titleize %>
-  </a>
-  <button ng-click="destroy()" class="btn btn-danger">
-    <i class="icon-trash"></i> Delete
-  </button>
-  <a href="/<%= @plural_model_name%>" class="btn">
-    Back to <%= @plural_model_name%>
-  </a>
+    <section class="panel panel-default">
+        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span><%= @model_name%></strong></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <form name="show<%= @model_name%>">
+                      <fieldset>
+                        <%- columns.each do |column| -%>
+                          <div class="control-group">
+                            <label class="control-label">
+                              <b><%= column.name.humanize %></b>
+                            </label>
+                            <div class="controls">
+                                {{<%=@resource_name%>.<%= column.name %>}}
+                            </div>
+                          </div>
+                        <%- end -%>
+                        <div class="divider divider-dashed"></div>
+                        <div class="form-actions">
+                          <a href="/<%= @plural_model_name%>/{{<%= @resource_name%>.id}}/edit"
+                            class="btn btn-primary"><i class="icon-edit"></i>
+                            Edit <%= @model_name.titleize %>
+                          </a>
+                          <button ng-click="destroy()" class="btn btn-danger">
+                            <i class="icon-trash"></i> Delete
+                          </button>
+                          <a href="/<%= @plural_model_name%>" class="btn">Back to <%= @plural_model_name%></a>
+                        </div>
+                      </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-
