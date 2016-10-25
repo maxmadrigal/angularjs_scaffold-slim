@@ -16,16 +16,15 @@
                           </label>
                           <div class="controls">
                             <%- if ['description', 'body'].include? column.name -%>
-                              <textarea name="<%= @resource_name%>[<%= column.name %>]"
-                                     ng-model="<%= @resource_name%>.<%= column.name %>"
-                                     class="<%= column.field_type %>"
-                                     required></textarea>
+                              <textarea name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required></textarea>
+                            <%- elsif ['email'].include? column.field_type.to_s.split('_').first -%>
+                                <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
+                            <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>
+                                <label class="ui-switch ui-switch-success"><input type="checkbox" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" required><i></i></label>
+                            <%- elsif ['text'].include? column.field_type.to_s.split('_').first -%>
+                                <input type="text" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
                             <%- else -%>
-                              <input type="<%= column.field_type.to_s.split('_').first %>"
-                                     name="<%= @resource_name%>[<%= column.name %>]"
-                                     ng-model="<%= @resource_name%>.<%= column.name %>"
-                                     class="<%= column.field_type %>"
-                                     required>
+                              <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
                             <%- end -%>
                             <span ng-show="new<%= @model_name%>.<%= column.name %>.$error.required"
                                   class="help-inline">
