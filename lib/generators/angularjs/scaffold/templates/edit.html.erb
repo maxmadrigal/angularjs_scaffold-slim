@@ -1,47 +1,57 @@
 <section data-ng-include=" '<%%= asset_path('headers/<%= @plural_folder_name%>.html') %>' " ></section>
 
-<form name="edit<%= @model_name%>">
-  <fieldset>
-    <legend>
-      Edit <%= @model_name.titleize %>
-    </legend>
-    <%- columns.each do |column| -%>
-      <div class="control-group">
-        <label class="control-label">
-          <%= column.name.humanize %>
-        </label>
-        <div class="controls">
-          <%- if ['description', 'body'].include? column.name -%>
-            <textarea name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required></textarea>
-          <%- elsif ['email'].include? column.field_type.to_s.split('_').first -%>
-              <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
-          <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>
-              <label class="ui-switch ui-switch-success"><input type="checkbox" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" required><i></i></label>
-          <%- elsif ['text'].include? column.field_type.to_s.split('_').first -%>
-              <input type="text" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
-          <%- else -%>
-            <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
-          <%- end -%>
-          <span ng-show="new<%= @model_name%>.<%= column.name %>.$error.required"
-                class="help-inline">
-            Required
-          </span>
+<div class="page">
+
+    <section class="panel panel-default">
+        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span><%= @model_name.titleize%></strong></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <form name="show<%= @model_name%>">
+                      <fieldset>
+                        <%- columns.each do |column| -%>
+                          <div class="control-group">
+                            <label class="control-label">
+                              <%= column.name.humanize %>
+                            </label>
+                            <div class="controls">
+                              <%- if ['description', 'body'].include? column.name -%>
+                                <textarea name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required></textarea>
+                              <%- elsif ['email'].include? column.field_type.to_s.split('_').first -%>
+                                  <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
+                              <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>
+                                  <label class="ui-switch ui-switch-success"><input type="checkbox" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" required><i></i></label>
+                              <%- elsif ['text'].include? column.field_type.to_s.split('_').first -%>
+                                  <input type="text" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
+                              <%- else -%>
+                                <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>" class="<%= column.field_type %>" required>
+                              <%- end -%>
+                              <span ng-show="new<%= @model_name%>.<%= column.name %>.$error.required"
+                                    class="help-inline">
+                                Required
+                              </span>
+                            </div>
+                          </div>
+                        <%- end -%>
+                        <div class="divider divider-dashed"></div>
+                        <div class="form-actions">
+                            <button class="btn btn-success" ng-click="save()"
+                              ng-disabled="isClean() || edit<%= @model_name%>.$invalid">
+                              Save
+                            </button>
+                            <button ng-click="destroy()"
+                                    ng-show="<%= @resource_name%>.id"
+                                    class="btn btn-danger">
+                                    <i class="icon-trash"></i>Delete
+                            </button>
+                            <a href="/<%= @plural_model_name%>" class="btn">
+                              Back to <%= @plural_model_name%>
+                            </a>
+                        </div>
+                      </fieldset>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
-    <%- end -%>
-    <div class="form-actions">
-      <button class="btn btn-success" ng-click="save()"
-        ng-disabled="isClean() || edit<%= @model_name%>.$invalid">
-        Save
-      </button>
-      <button ng-click="destroy()"
-              ng-show="<%= @resource_name%>.id"
-              class="btn btn-danger">
-              <i class="icon-trash"></i>Delete
-      </button>
-      <a href="/<%= @plural_model_name%>" class="btn">
-        Back to <%= @plural_model_name%>
-      </a>
-    </div>
-  </fieldset>
-</form>
+    </section>
+</div>
