@@ -115,6 +115,22 @@ module Angularjs
         # remove the default .js.coffee file added by rails.
         remove_file "app/assets/javascripts/#{@plural_folder_name}/#{@plural_model_name}.js.coffee"
       end
+
+      insert_into_file "public/scripts/app/app.module.js",  "\n        '#{@plural_model_name}',", :after => "perfilfinanciero modules"
+
+      folder_route_comment = "//#{@plural_folder_name} perfilfinanciero"
+      index_route = ".when(\"/#{@plural_model_name}\", {controller: #{@controller}IndexCtrl, templateUrl: 'assets/#{@plural_folder_name}/#{@plural_model_name}/index.html'})"
+      create_route = ".when(\"/#{@plural_model_name}/new\", {controller: #{@controller}CreateCtrl, templateUrl: 'assets/#{@plural_folder_name}/#{@plural_model_name}/new.html'})"
+      edit_route = ".when(\"/#{@plural_model_name}/:id/edit\", {controller: #{@controller}EditCtrl, templateUrl: 'assets/#{@plural_folder_name}/#{@plural_model_name}/edit.html'})"
+      show_route = ".when(\"/#{@plural_model_name}/:id\", {controller: #{@controller}ShowCtrl, templateUrl: 'assets/#{@plural_folder_name}/#{@plural_model_name}/show.html'})"
+
+      insert_into_file "public/scripts/app/core/config.route.js",  "\n\n            #{folder_route_comment}", :after => "//perfilfinanciero pages"
+      insert_into_file "public/scripts/app/core/config.route.js",  "\n            #{show_route}", :after => folder_route_comment
+      insert_into_file "public/scripts/app/core/config.route.js",  "\n            #{edit_route}", :after => folder_route_comment
+      insert_into_file "public/scripts/app/core/config.route.js",  "\n            #{create_route}", :after => folder_route_comment
+      insert_into_file "public/scripts/app/core/config.route.js",  "\n\n            #{index_route}", :after => folder_route_comment
+
+
     end
   end
 end
