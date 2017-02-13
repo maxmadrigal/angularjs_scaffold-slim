@@ -1,19 +1,17 @@
 <section data-ng-include=" '<%%= asset_path('headers/<%= @plural_folder_name%>.html') %>' " ></section>
-
 <div class="page page-table">
     <section class="panel panel-default table-dynamic">
-        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> <%= @controller %></strong></div>
+        <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> <%= @plural_model_name.underscore.humanize %></strong></div>
 
+        <form>
         <div class="table-filters">
             <div class="row">
                 <div class="col-sm-4 col-xs-6">
-                    <form>
                         <input type="text"
                                placeholder="Search..."
                                class="form-control"
                                data-ng-model="searchKeywords"
                                data-ng-keyup="search()">
-                    </form>
                 </div>
                 <div class="col-sm-3 col-xs-6 filter-result-info">
                     <span>
@@ -22,12 +20,14 @@
                 </div>
             </div>
         </div>
+        </form>
 
         <table class="table table-bordered table-striped table-responsive">
           <thead>
             <tr>
             <%- columns.each do |column| -%>
-                <th><div class="th"><%= column.name.humanize %>
+                <%- unless @index_blacklist_columns.include?(column.name) -%>
+                <th><div class="th"><%= column.name.underscore.humanize %>
                     <span class="fa fa-angle-up"
                           data-ng-click=" order('<%= column.name %>') "
                           data-ng-class="{active: row == '<%= column.name %>'}"></span>
@@ -35,6 +35,7 @@
                           data-ng-click=" order('-<%= column.name %>') "
                           data-ng-class="{active: row == '-<%= column.name %>'}"></span>
                 </div></th>
+                <%- end -%>
             <%- end -%>
               <th>Actions</th>
             </tr>
@@ -42,11 +43,13 @@
           <tbody>
             <tr ng-repeat="<%= @resource_name %> in currentPage<%= @controller %>">
             <%- columns.each do |column| -%>
+                <%- unless @index_blacklist_columns.include?(column.name) -%>
                 <td>
                   <a href="/<%= @plural_model_name %>/{{<%= @resource_name %>.id}}">
                     {{<%= @resource_name %>.<%= column.name %>}}
                   </a>
                 </td>
+                <%- end -%>
             <%- end -%>
               <td>
                 <a href="/<%= @plural_model_name %>/{{<%= @resource_name %>.id}}/edit"

@@ -12,7 +12,7 @@
                       <%- columns.each do |column| -%>
                         <div class="control-group">
                           <label class="control-label">
-                            <%= column.name.humanize %>
+                            <%= column.name.underscore.humanize %>
                           </label>
                           <div class="controls">
                             <%- if ['description', 'body'].include? column.name -%>
@@ -44,7 +44,7 @@
                                 class="btn btn-danger">
                                 <i class="icon-trash"></i> Delete
                         </button>
-                        <a href="/<%= @plural_model_name%>" class="btn">Back to <%= @plural_model_name%></a>
+                        <a href="/<%= @plural_model_name%>" class="btn">Back to <%= @plural_model_name.underscore.humanize%></a>
                       </div>
                     </fieldset>
                   </form>

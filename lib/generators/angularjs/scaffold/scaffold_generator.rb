@@ -24,11 +24,18 @@ module Angularjs
       @folder_name  = folder_name.singularize
       @resource_folder_name = folder_name.demodulize.underscore
       @plural_folder_name = @resource_folder_name.pluralize
+      @hasFilters=false
+
+
+      @filters_column_names = %w[Sector_id Tipoentidad_id Catalogo_id]
+      @reference_column_names = %w[Moneda_id _id Catalogo_id]
+      @index_blacklist_columns = %w[Descripcion]
+      @index_blacklist_columns.push(*@filters_column_names)
     end
 
     def columns
       begin
-        excluded_column_names = %w[id _id _type created_at updated_at]
+        excluded_column_names = %w[id _id _type id_anterior created_at updated_at id_cuenta_anterior id_indicador_anterior]
         @model_name.constantize.columns.
           reject{|c| excluded_column_names.include?(c.name) }.
           collect{|c| ::Rails::Generators::GeneratedAttribute.

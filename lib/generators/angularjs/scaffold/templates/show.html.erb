@@ -12,7 +12,7 @@
                         <%- columns.each do |column| -%>
                           <div class="control-group">
                             <label class="control-label">
-                              <b><%= column.name.humanize %></b>
+                              <b><%= column.name.underscore.humanize %></b>
                             </label>
                             <div class="controls">
                                 {{<%=@resource_name%>.<%= column.name %>}}
@@ -28,7 +28,7 @@
                           <button ng-click="destroy()" class="btn btn-danger">
                             <i class="icon-trash"></i> Delete
                           </button>
-                          <a href="/<%= @plural_model_name%>" class="btn">Back to <%= @plural_model_name%></a>
+                          <a href="/<%= @plural_model_name%>" class="btn">Back to <%= @plural_model_name.underscore.humanize%></a>
                         </div>
                       </fieldset>
                     </form>
