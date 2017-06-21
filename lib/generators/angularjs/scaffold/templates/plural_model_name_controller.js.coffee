@@ -56,18 +56,18 @@ root = global ? window
 
   $scope.init = () -><%
   if (filterColumns.length>0) %>
-    if Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '') %> == undefined or Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '') %> == null
+    if <%= get_column_filter_path(filterColumns.first().name.to_s) %> == undefined or <%= get_column_filter_path(filterColumns.first().name.to_s) %> == null
       $scope.<%= @plural_model_name %> = []
       $scope.filtered<%= @plural_model_name %> = []
       $scope.search()<% filterColumns.drop(1).each do |fcolumn| %>
-    else if Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '') %> == undefined or Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '') %> == null
+    else if <%= get_column_filter_path(fcolumn.name.to_s) %> == undefined or <%= get_column_filter_path(fcolumn.name.to_s) %> == null
       $scope.<%= @plural_model_name %> = []
       $scope.filtered<%= @plural_model_name %> = []
       $scope.search()<% end %>
     else
       <%= @model_name %>.query
-        <%= filterColumns.first().name.to_s%>: Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '.id') %><% filterColumns.drop(1).each do |fcolumn| %>
-        <%= fcolumn.name.to_s%>: Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '.id') %><% end %>
+        <%= filterColumns.first().name.to_s%>: <%= get_column_filter_path(filterColumns.first().name.to_s) %>.id<% filterColumns.drop(1).each do |fcolumn| %>
+        <%= fcolumn.name.to_s%>: <%= get_column_filter_path(fcolumn.name.to_s) %>.id<% end %>
       , (<%= @plural_model_name %>) ->
         $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
         $scope.search()

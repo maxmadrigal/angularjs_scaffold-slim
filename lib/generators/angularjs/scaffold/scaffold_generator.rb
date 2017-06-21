@@ -55,24 +55,6 @@ module Angularjs
       end
     end
 
-    def reference_columns
-    begin
-      excluded_column_names = %w[id _id _type id_anterior created_at updated_at id_cuenta_anterior id_indicador_anterior]
-      @model_name.constantize.columns.
-        reject{|c| excluded_column_names.include?(c.name) }.
-        collect{|c| ::Rails::Generators::GeneratedAttribute.
-                new(c.name, c.type)}
-    rescue NoMethodError
-      @model_name.constantize.fields.
-        collect{|c| c[1]}.
-        reject{|c| excluded_column_names.include?(c.name) }.
-        reject{|c| c.foreign_key? }.
-        collect{|c|
-          ::Rails::Generators::GeneratedAttribute.
-            new(c.name, c.type.to_s)}
-    end
-    end
-
     def filterColumns
       begin
         @model_name.constantize.columns.
@@ -89,7 +71,17 @@ module Angularjs
       end
     end
 
-
+    def get_column_filter_path (fcolumn = "")
+      if fcolumn == "Sector_id"
+        "Filtros.sector"
+      elsif fcolumn == "TipoEntidad_id"
+          return "Filtros.sector.tipo_entidad"
+      elsif fcolumn == "Entidad_id"
+            return "Filtros.sector.tipo_entidad.entidad"
+      elsif fcolumn == "Catalogo_id"
+          return "Filtros.sector.catalogo"
+      end
+    end
 
     def generate
       remove_file "app/assets/stylesheets/scaffolds.css.scss"

@@ -31,12 +31,20 @@
             <%- columns.each do |column| -%>
                 <%- unless @index_blacklist_columns.include?(column.name) -%>
                 <th><div class="th"><%= column.name.underscore.humanize %>
+                  <%-if column.foreign_key? %>                    <span class="fa fa-angle-up"
+                          data-ng-click=" order('<%= column.name.to_s.gsub('_id', '.Nombre') %>') "
+                          data-ng-class="{active: row == '<%= column.name.to_s.gsub('_id', '.Nombre') %>'}"></span>
+                    <span class="fa fa-angle-down"
+                          data-ng-click=" order('-<%= column.name.to_s.gsub('_id', '.Nombre') %>') "
+                          data-ng-class="{active: row == '-<%= column.name.to_s.gsub('_id', '.Nombre') %>'}"></span>
+                  <%-else -%>
                     <span class="fa fa-angle-up"
                           data-ng-click=" order('<%= column.name %>') "
                           data-ng-class="{active: row == '<%= column.name %>'}"></span>
                     <span class="fa fa-angle-down"
                           data-ng-click=" order('-<%= column.name %>') "
                           data-ng-class="{active: row == '-<%= column.name %>'}"></span>
+                      <%- end -%>
                 </div></th>
                 <%- end -%>
             <%- end -%>
@@ -49,7 +57,10 @@
                 <%- unless @index_blacklist_columns.include?(column.name) -%>
                 <td>
                   <a href="/<%= @plural_model_name %>/{{<%= @resource_name %>.id}}">
+                    <%-if column.foreign_key? %>                    {{<%= @resource_name %>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
+                    <%-else -%>
                     {{<%= @resource_name %>.<%= column.name %>}}
+                    <%- end -%>
                   </a>
                 </td>
                 <%- end -%>
