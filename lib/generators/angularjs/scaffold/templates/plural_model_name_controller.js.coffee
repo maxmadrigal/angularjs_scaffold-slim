@@ -1,7 +1,7 @@
 
 root = global ? window
 
-<%= @controller %>IndexCtrl = ($scope,$filter, <%= @model_name %>) ->
+<%= @controller %>IndexCtrl = ($scope,$filter,<%= @init_controler_filter?" Filtros, ":"" %> <%= @model_name %>) ->
   $scope.searchKeywords = ''
   $scope.filtered<%= @controller %> = []
   $scope.row = ''
@@ -54,15 +54,32 @@ root = global ? window
   $scope.currentPage = 1
   $scope.currentPage<%= @controller %> = []
 
-  init = ->
-    $scope.<%= @plural_model_name %> = <%= @model_name %>.query()
-    $scope.searchKeywords = ''
-    $scope.filtered<%= @controller %> = $scope.<%= @plural_model_name %>
-    $scope.currentPage<%= @controller %> = $scope.<%= @plural_model_name %>
+  $scope.init = () -><%
+  if (filterColumns.length>0) %>
+    if Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '') %> == undefined or Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '') %> == null
+      $scope.<%= @plural_model_name %> = []
+      $scope.filtered<%= @plural_model_name %> = []
+      $scope.search()<% filterColumns.drop(1).each do |fcolumn| %>
+    else if Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '') %> == undefined or Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '') %> == null
+      $scope.<%= @plural_model_name %> = []
+      $scope.filtered<%= @plural_model_name %> = []
+      $scope.search()<% end %>
+    else
+      <%= @model_name %>.query
+        <%= filterColumns.first().name.to_s%>: Filtros.<%= filterColumns.first().name.to_s.downcase.gsub('_id', '.id') %><% filterColumns.drop(1).each do |fcolumn| %>
+        <%= fcolumn.name.to_s%>: Filtros.<%= fcolumn.name.to_s.downcase.gsub('_id', '.id') %><% end %>
+      , (<%= @plural_model_name %>) ->
+        $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
+        $scope.search()
+    <% else %>
+    <%= @model_name %>.query(()<%= @plural_model_name %>) ->
+      $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
+      $scope.search()
+    )
+    <% end %>
+  $scope.init()
 
-  init()
-
-<%= @controller %>IndexCtrl.$inject = ['$scope','$filter', '<%= @model_name %>'];
+<%= @controller %>IndexCtrl.$inject = ['$scope','$filter',<%= @init_controler_filter?" 'Filtros', ":"" %> '<%= @model_name %>'];
 
 <%= @controller %>CreateCtrl = ($scope, $location, <%= @model_name %>) ->
   $scope.save = ->

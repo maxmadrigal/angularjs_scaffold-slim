@@ -4,6 +4,9 @@
         <div class="panel-heading"><strong><span class="glyphicon glyphicon-th"></span> <%= @plural_model_name.underscore.humanize %></strong></div>
 
         <form>
+        <%- if filterColumns.length>0 -%>
+        <filtro-<%= filterColumns.last().name.to_s.gsub('_id', '') -%> on-Change="init();" />
+        <%- end -%>
         <div class="table-filters">
             <div class="row">
                 <div class="col-sm-4 col-xs-6">

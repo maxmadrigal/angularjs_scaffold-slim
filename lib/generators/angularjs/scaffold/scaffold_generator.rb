@@ -27,10 +27,15 @@ module Angularjs
       @hasFilters=false
 
 
-      @filters_column_names = %w[Sector_id Tipoentidad_id Catalogo_id]
-      @reference_column_names = %w[Moneda_id _id Catalogo_id]
+      @filters_column_names = %w[Sector_id Tipoentidad_id Catalogo_id Entidad_id]
+      @reference_column_names = %w[Moneda_id _id Catalogo_id Area_id]
       @index_blacklist_columns = %w[Descripcion]
       @index_blacklist_columns.push(*@filters_column_names)
+
+      @init_controler_filter = ""
+      @init_controler_filter_declaration = ""
+      @init_controler_filter_declaration = filterColumns.map { |c| c.name.to_s.downcase.gsub('_id', '') }.join(",") if filterColumns
+      @init_controler_filter = filterColumns.map { |c| "Filtros." + c.name.to_s.downcase.gsub('_id', '') }.join(",") if filterColumns
     end
 
     def columns
@@ -49,6 +54,24 @@ module Angularjs
               new(c.name, c.type.to_s)}
       end
     end
+
+    def filterColumns
+      begin
+        @model_name.constantize.columns.
+          reject{|c| !@filters_column_names.include?(c.name) }.
+          collect{|c| ::Rails::Generators::GeneratedAttribute.
+                  new(c.name, c.type)}
+      rescue NoMethodError
+        @model_name.constantize.fields.
+          collect{|c| c[1]}.
+          reject{|c| !@filters_column_names.include?(c.name) }.
+          collect{|c|
+            ::Rails::Generators::GeneratedAttribute.
+              new(c.name, c.type.to_s)}
+      end
+    end
+
+
 
     def generate
       remove_file "app/assets/stylesheets/scaffolds.css.scss"
