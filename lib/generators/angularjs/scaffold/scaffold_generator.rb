@@ -28,7 +28,7 @@ module Angularjs
 
 
       @filters_column_names = %w[Sector_id Tipoentidad_id Catalogo_id Entidad_id]
-      @reference_column_names = %w[Moneda_id _id Catalogo_id Area_id]
+      @reference_column_names = %w[Moneda_id _id Area_id]
       @index_blacklist_columns = %w[Descripcion]
       @index_blacklist_columns.push(*@filters_column_names)
 
@@ -53,6 +53,24 @@ module Angularjs
             ::Rails::Generators::GeneratedAttribute.
               new(c.name, c.type.to_s)}
       end
+    end
+
+    def reference_columns
+    begin
+      excluded_column_names = %w[id _id _type id_anterior created_at updated_at id_cuenta_anterior id_indicador_anterior]
+      @model_name.constantize.columns.
+        reject{|c| excluded_column_names.include?(c.name) }.
+        collect{|c| ::Rails::Generators::GeneratedAttribute.
+                new(c.name, c.type)}
+    rescue NoMethodError
+      @model_name.constantize.fields.
+        collect{|c| c[1]}.
+        reject{|c| excluded_column_names.include?(c.name) }.
+        reject{|c| c.foreign_key? }.
+        collect{|c|
+          ::Rails::Generators::GeneratedAttribute.
+            new(c.name, c.type.to_s)}
+    end
     end
 
     def filterColumns

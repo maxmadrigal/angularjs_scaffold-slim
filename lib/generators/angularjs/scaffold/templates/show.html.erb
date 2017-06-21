@@ -15,7 +15,10 @@
                               <b><%= column.name.underscore.humanize %></b>
                             </label>
                             <div class="controls">
+                                <%-if column.foreign_key? %>                                {{<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
+                                <%-else -%>
                                 {{<%=@resource_name%>.<%= column.name %>}}
+                                <%- end -%>
                             </div>
                           </div>
                         <%- end -%>
