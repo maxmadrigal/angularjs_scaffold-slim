@@ -71,12 +71,13 @@ root = global ? window
       , (<%= @plural_model_name %>) ->
         $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
         $scope.search()
-    <% else %>
-    <%= @model_name %>.query(()<%= @plural_model_name %>) ->
-      $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
-      $scope.search()
+  <% else %>
+    <%= @model_name %>.query(
+      (<%= @plural_model_name %>) ->
+        $scope.<%= @plural_model_name %> = <%= @plural_model_name %>
+        $scope.search()
     )
-    <% end %>
+  <% end %>
   $scope.init()
 
 <%= @controller %>IndexCtrl.$inject = ['$scope','$filter',<%= @init_controler_filter?" 'Filtros', ":"" %> '<%= @model_name %>'];
