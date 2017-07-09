@@ -28,7 +28,7 @@ module Angularjs
 
 
       @filters_column_names = %w[Sector_id Tipoentidad_id Catalogo_id Entidad_id]
-      @reference_column_names = %w[Moneda_id _id Area_id]
+      #@reference_column_names = %w[Moneda_id _id Area_id]
       @index_blacklist_columns = %w[Descripcion]
       @index_blacklist_columns.push(*@filters_column_names)
 
@@ -57,7 +57,7 @@ module Angularjs
 
     def filterColumns
       begin
-        @model_name.constantize.columns.
+        columns.
           reject{|c| !@filters_column_names.include?(c.name) }.
           collect{|c| ::Rails::Generators::GeneratedAttribute.
                   new(c.name, c.type)}
@@ -65,6 +65,23 @@ module Angularjs
         @model_name.constantize.fields.
           collect{|c| c[1]}.
           reject{|c| !@filters_column_names.include?(c.name) }.
+          collect{|c|
+            ::Rails::Generators::GeneratedAttribute.
+              new(c.name, c.type.to_s)}
+      end
+    end
+
+    def referencedColumns
+      begin
+        columns.
+          reject{|c| !c.foreign_key? }.
+          collect{|c| ::Rails::Generators::GeneratedAttribute.
+                  new(c.name, c.type)}
+      rescue NoMethodError
+        @model_name.constantize.fields.
+          collect{|c| c[1]}.
+          reject{|c| !@filters_column_names.include?(c.name) }.
+          reject{|c| !c.foreign_key? }.
           collect{|c|
             ::Rails::Generators::GeneratedAttribute.
               new(c.name, c.type.to_s)}
@@ -122,6 +139,17 @@ module Angularjs
 
       inject_into_class "app/controllers/#{@plural_model_name}_controller.rb",
         "#{@controller}Controller".constantize, "respond_to :json\n"
+
+      if (referencedColumns.length>0)
+        respond_json_reference_index = "\n\nrespond_to do |format|
+      format.json do
+        render :json => @url_productos.to_json(:include => { :TipoProducto => { :only => :Nombre } })
+      end
+    end"
+        insert_into_file "app/controllers/#{@plural_model_name}_controller.rb",  respond_json_reference_index,
+          after: ".paginate(:page => params[:page], :per_page => 1000)"
+      end
+
       template "new.html.erb",
         "app/assets/templates/#{@plural_folder_name}/#{@plural_model_name}/new.html.erb"
       template "edit.html.erb",
