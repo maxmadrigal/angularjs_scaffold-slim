@@ -13,7 +13,9 @@
                           <div class="form-group">
                             <label for="<%= column.name %>"><%= column.name.underscore.humanize %></label>
                           <%- if ['description', 'body','descripcion'].include? column.name.downcase -%>
-                            <textarea name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="form-control" required></textarea>
+                            <div text-angular name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="ui-editor" required></div>
+                          <%- elsif ['icono','imagen'].include? column.name.downcase -%>
+                            <div control-imagen name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="imagen" required></div>
                           <%- elsif ['email'].include? column.field_type.to_s.split('_').first -%>
                             <input type="<%= column.field_type.to_s.split('_').first %>" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="form-control" required>
                           <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>
