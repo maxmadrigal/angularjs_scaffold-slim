@@ -141,13 +141,31 @@ module Angularjs
         "#{@controller}Controller".constantize, "respond_to :json\n"
 
       if (referencedColumns.length>0)
-        respond_json_reference_index = "\n\nrespond_to do |format|
+        @jsonRefencedObjects = ""
+        for column in referencedColumns
+          @columnReferencedObject = column.name.to_s.gsub('_id', '')
+          @jsonRefencedObjects = "#{@jsonRefencedObjects} ," if @jsonRefencedObjects.nil?
+          @jsonRefencedObjects = "#{@jsonRefencedObjects} :#{@columnReferencedObject} => { :only => :Nombre}"
+        end
+        @jsonRefencedObjects = "{ #{@jsonRefencedObjects} }"
+        respond_json_reference_index = "\n\n\t\trespond_to do |format|
+      format.html
       format.json do
-        render :json => @url_productos.to_json(:include => { :TipoProducto => { :only => :Nombre } })
+        render :json => @#{@plural_model_name}.to_json(:include => #{@jsonRefencedObjects})
       end
     end"
         insert_into_file "app/controllers/#{@plural_model_name}_controller.rb",  respond_json_reference_index,
           after: ".paginate(:page => params[:page], :per_page => 1000)"
+
+        respond_json_reference_show = "\n\n\t\t@#{@resource_name} = #{@model_name}.find( params[:id] )
+	  respond_to do |format|
+      format.html
+      format.json do
+        render :json => @#{@resource_name}.to_json(:include => #{@jsonRefencedObjects})
+      end
+    end"
+        insert_into_file "app/controllers/#{@plural_model_name}_controller.rb",  respond_json_reference_show,
+          after: "def show"
       end
 
       template "new.html.erb",
