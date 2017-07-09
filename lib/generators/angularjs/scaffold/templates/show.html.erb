@@ -10,12 +10,13 @@
                     <form name="show<%= @model_name%>">
                       <fieldset>
                         <%- columns.each do |column| -%>
-                          <div class="control-group">
+                          <div class="control-group" ng-if="<%=@resource_name%>.<%= column.name %>">
                             <label class="control-label">
                               <b><%= column.name.underscore.humanize %></b>
                             </label>
                             <div class="controls">
                                 <%- if ['description', 'body','descripcion','imagen'].include? column.name.downcase -%>                                <p ng-bind-html="<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>"></p>
+                                <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>                                <label class="ui-switch ui-switch-success"><input type="checkbox" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="form-control" ng-disabled="true"><i></i></label>
                                 <%-elsif column.foreign_key? %>                                {{<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
                                 <%-else -%>
                                 {{<%=@resource_name%>.<%= column.name %>}}

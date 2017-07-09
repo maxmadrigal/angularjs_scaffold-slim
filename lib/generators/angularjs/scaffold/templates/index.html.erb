@@ -58,6 +58,7 @@
                 <td>
                   <a href="/<%= @plural_model_name %>/{{<%= @resource_name %>.id}}">
                     <%-if column.foreign_key? %>                    {{<%= @resource_name %>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
+                    <%- elsif ['check'].include? column.field_type.to_s.split('_').first -%>                    <label class="ui-switch ui-switch-success"><input type="checkbox" name="<%= @resource_name%>[<%= column.name %>]" ng-model="<%= @resource_name%>.<%= column.name %>"  class="form-control" ng-disabled="true"><i></i></label>
                     <%-else -%>
                     {{<%= @resource_name %>.<%= column.name %>}}
                     <%- end -%>
