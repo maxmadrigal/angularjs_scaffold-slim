@@ -15,7 +15,8 @@
                               <b><%= column.name.underscore.humanize %></b>
                             </label>
                             <div class="controls">
-                                <%-if column.foreign_key? %>                                {{<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
+                                <%- if ['description', 'body','descripcion','imagen'].include? column.name.downcase -%>                                <p ng-bind-html="<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>"></p>
+                                <%-elsif column.foreign_key? %>                                {{<%=@resource_name%>.<%= column.name.to_s.gsub('_id', '.Nombre') %>}}
                                 <%-else -%>
                                 {{<%=@resource_name%>.<%= column.name %>}}
                                 <%- end -%>

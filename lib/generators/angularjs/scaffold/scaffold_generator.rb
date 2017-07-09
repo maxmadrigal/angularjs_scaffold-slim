@@ -31,6 +31,8 @@ module Angularjs
       #@reference_column_names = %w[Moneda_id _id Area_id]
       @index_blacklist_columns = %w[Descripcion]
       @index_blacklist_columns.push(*@filters_column_names)
+      @index_blacklist_columns.push("Imagen")
+      @index_blacklist_columns.push("Icono")
 
       @init_controler_filter = ""
       @init_controler_filter_declaration = ""
@@ -144,7 +146,7 @@ module Angularjs
         @jsonRefencedObjects = ""
         for column in referencedColumns
           @columnReferencedObject = column.name.to_s.gsub('_id', '')
-          @jsonRefencedObjects = "#{@jsonRefencedObjects} ," if @jsonRefencedObjects.nil?
+          @jsonRefencedObjects = "#{@jsonRefencedObjects} ," if @jsonRefencedObjects.length>0
           @jsonRefencedObjects = "#{@jsonRefencedObjects} :#{@columnReferencedObject} => { :only => :Nombre}"
         end
         @jsonRefencedObjects = "{ #{@jsonRefencedObjects} }"
