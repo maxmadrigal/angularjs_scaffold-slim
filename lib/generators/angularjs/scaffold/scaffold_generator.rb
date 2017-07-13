@@ -102,6 +102,47 @@ module Angularjs
       end
     end
 
+    def get_references_json_referenced_object()
+      @result = ""
+      if (referencedColumns.length>0)
+        for column in referencedColumns
+          @columnReferencedObject = column.name.to_s.gsub('_id', '')
+          @result = "#{@result} ," if @result.length>0
+          @result = "#{@result} :#{@columnReferencedObject} => { :only => :Nombre}"
+        end
+      end
+      return @result
+    end
+
+    def get_references_list_parameters()
+      @result = ""
+      if (referencedColumns.length>0)
+        for column in referencedColumns
+          @columnReferencedObject = column.name.to_s.gsub('_id', '')
+          @result = "#{@result}, #{@columnReferencedObject}"
+        end
+      end
+      @result
+    end
+
+    def get_list_name(fieldName = "")
+      @result = fieldName.to_s.gsub('_id', '')
+      @result = @result.demodulize.underscore
+      @result = @result.pluralize
+      @result
+    end
+
+    def get_references_list_injections()
+      @result = ""
+      if (referencedColumns.length>0)
+        for column in referencedColumns
+          @columnReferencedObject = column.name.to_s.gsub('_id', '')
+          @result = "#{@result}, '#{@columnReferencedObject}'"
+        end
+      end
+      @result
+    end
+
     def generate
       remove_file "app/assets/stylesheets/scaffolds.css.scss"
       # append_to_file "app/assets/javascripts/application.js",
@@ -143,12 +184,7 @@ module Angularjs
         "#{@controller}Controller".constantize, "respond_to :json\n"
 
       if (referencedColumns.length>0)
-        @jsonRefencedObjects = ""
-        for column in referencedColumns
-          @columnReferencedObject = column.name.to_s.gsub('_id', '')
-          @jsonRefencedObjects = "#{@jsonRefencedObjects} ," if @jsonRefencedObjects.length>0
-          @jsonRefencedObjects = "#{@jsonRefencedObjects} :#{@columnReferencedObject} => { :only => :Nombre}"
-        end
+        @jsonRefencedObjects = get_references_json_referenced_object()
         @jsonRefencedObjects = "{ #{@jsonRefencedObjects} }"
         respond_json_reference_index = "\n\n\t\trespond_to do |format|
       format.html

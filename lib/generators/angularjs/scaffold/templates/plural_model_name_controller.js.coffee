@@ -82,12 +82,25 @@ root = global ? window
 
 <%= @controller %>IndexCtrl.$inject = ['$scope','$filter',<%= @init_controler_filter?" 'Filtros', ":"" %> '<%= @model_name %>'];
 
-<%= @controller %>CreateCtrl = ($scope, $location, <%= @model_name %>) ->
+<%= @controller %>CreateCtrl = ($scope, $location, <%= @model_name %><%= get_references_list_parameters() %>) ->
   $scope.save = ->
     <%= @model_name %>.save $scope.<%= @resource_name %>, (<%= @resource_name %>) ->
       $location.path "/<%= @plural_model_name %>/#{<%= @resource_name %>.id}/edit"
+<% if (referencedColumns.length>0)
+     for column in referencedColumns %>
+  $scope.load<%= column.name.to_s.gsub('_id', '') %> = () ->
+    <%= column.name.to_s.gsub('_id', '') %>.query(
+      (<%= get_list_name(column.name) %>) ->
+        $scope.<%= get_list_name(column.name) %> = <%= get_list_name(column.name) %>
+    )<%
+    end
+  end
+  if (referencedColumns.length>0)
+     for column in referencedColumns %>
+  $scope.load<%= column.name.to_s.gsub('_id', '') %>()<% end
+  end %>
 
-<%= @controller %>CreateCtrl.$inject = ['$scope', '$location', '<%= @model_name %>'];
+<%= @controller %>CreateCtrl.$inject = ['$scope', '$location', '<%= @model_name %>'<%= get_references_list_injections() %>];
 
 <%= @controller %>ShowCtrl = ($scope, $location, $routeParams, <%= @model_name %>) ->
   <%= @model_name %>.get
@@ -103,7 +116,7 @@ root = global ? window
 
 <%= @controller %>ShowCtrl.$inject = ['$scope', '$location', '$routeParams', '<%= @model_name %>'];
 
-<%= @controller %>EditCtrl = ($scope, $location, $routeParams, <%= @model_name %>) ->
+<%= @controller %>EditCtrl = ($scope, $location, $routeParams, <%= @model_name %><%= get_references_list_parameters() %>) ->
   <%= @model_name %>.get
     id: $routeParams.id
   , (<%= @resource_name %>) ->
@@ -122,9 +135,21 @@ root = global ? window
   $scope.save = ->
     <%= @model_name %>.update $scope.<%= @resource_name %>, (<%= @resource_name %>) ->
       $location.path "/<%= @plural_model_name %>"
+<% if (referencedColumns.length>0)
+     for column in referencedColumns %>
+  $scope.load<%= column.name.to_s.gsub('_id', '') %> = () ->
+    <%= column.name.to_s.gsub('_id', '') %>.query(
+      (<%= get_list_name(column.name) %>) ->
+        $scope.<%= get_list_name(column.name) %> = <%= get_list_name(column.name) %>
+    )<%
+    end
+  end
+  if (referencedColumns.length>0)
+     for column in referencedColumns %>
+  $scope.load<%= column.name.to_s.gsub('_id', '') %>()<% end
+  end %>
 
-
-<%= @controller %>EditCtrl.$inject = ['$scope', '$location', '$routeParams', '<%= @model_name %>'];
+<%= @controller %>EditCtrl.$inject = ['$scope', '$location', '$routeParams', '<%= @model_name %>'<%= get_references_list_injections() %>];
 
 # exports
 root.<%= @controller %>IndexCtrl  = <%= @controller %>IndexCtrl

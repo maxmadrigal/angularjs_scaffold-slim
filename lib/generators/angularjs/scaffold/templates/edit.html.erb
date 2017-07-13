@@ -23,7 +23,7 @@
                           <%- elsif @filters_column_names.include?(column.name) -%>
                             <filtro-<%= column.name.to_s.gsub('_id', '') -%>  class="form-control" required/>
                           <%- elsif column.foreign_key? -%>
-                            <select ng-model="<%= @resource_name%>.<%= column.name %>" ng-options="item as item.Nombre for item in <%= column.name.to_s.gsub('_id', '') %>" class="form-control" required>
+                            <select ng-model="<%= @resource_name%>.<%= column.name %>" ng-options="item.id as item.Nombre for item in <%= get_list_name(column.name) %>" class="form-control" required>
                               <option value="">Seleccione un <%= column.name.underscore.humanize %></option>
                             </select>
                           <%- elsif ['text'].include? column.field_type.to_s.split('_').first -%>
